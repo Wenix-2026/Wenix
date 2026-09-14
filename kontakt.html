@@ -52,13 +52,9 @@
             padding: 16px 28px; background: #fff; color: #000;
             font-family: 'Inter', sans-serif; font-size: .9rem; font-weight: 500;
             border: none; border-radius: 10px; cursor: pointer; text-decoration: none; width: 100%;
+            transition: background 0.2s, transform 0.15s;
         }
-        .btn-contact-secondary {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 16px 28px; background: #1a1a1a; color: #fff;
-            font-family: 'Inter', sans-serif; font-size: .9rem; font-weight: 400;
-            border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; cursor: pointer; width: 100%;
-        }
+        .btn-contact-primary:hover { background: rgba(255,255,255,0.88); transform: translateY(-1px); }
     </style>
 </head>
 <body>
@@ -86,9 +82,10 @@
                     <p data-cms="kontakt_email_val" style="color: #fff; font-size: 1.1rem; font-weight: 500;">info@wenix.cz</p>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 10px; min-width: 220px;">
-                    <a href="mailto:info@wenix.cz" target="_blank" class="btn-contact-primary">
+                    <button type="button" onclick="openEmailClient(event)" class="btn-contact-primary">
                         <i class="bx bx-envelope"></i> Otevřít v e-mailovém klientu
-                    </a>
+                    </button>
+                    <span id="copy-feedback" style="font-size: 0.75rem; color: #14968c; text-align: center; opacity: 0; transition: opacity 0.3s;">E-mail byl zkopírován do schránky!</span>
                 </div>
             </div>
 
@@ -120,5 +117,26 @@
         </div>
     </div>
 </main>
+
+<script>
+    function openEmailClient(e) {
+        e.preventDefault();
+        const email = "info@wenix.cz";
+        
+        // Zkopírování e-mailové adresy do schránky
+        navigator.clipboard.writeText(email).then(() => {
+            const feedback = document.getElementById('copy-feedback');
+            if (feedback) {
+                feedback.style.opacity = '1';
+                setTimeout(() => { feedback.style.opacity = '0'; }, 3000);
+            }
+        }).catch(err => {
+            console.error('Chyba při kopírování: ', err);
+        });
+
+        // Otevření poštovního klienta
+        window.location.href = `mailto:${email}`;
+    }
+</script>
 </body>
 </html>
