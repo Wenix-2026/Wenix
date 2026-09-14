@@ -36,6 +36,24 @@
             max-width: 1280px; margin: 0 auto; padding: 0 24px; height: 80px;
             display: flex; align-items: center; justify-content: space-between;
         }
+        .nav-right { display: flex; align-items: center; gap: 32px; }
+        .nav-social { display: flex; align-items: center; gap: 16px; }
+        .nav-social a { color: #fff; opacity: .75; transition: opacity .2s; font-size: 1.45rem; line-height: 1; }
+        .nav-social a:hover { opacity: 1; }
+        #burger-overlay {
+            position: fixed; inset: 0; z-index: 90;
+            background: rgba(0,0,0,0.98); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        #burger-overlay.open { display: flex; opacity: 1; }
+        #burger-overlay nav { display: flex; flex-direction: column; text-align: center; gap: 32px; }
+        #burger-overlay a.menu-link {
+            font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 5vw, 3.5rem);
+            color: rgba(255,255,255,0.65); text-decoration: none; letter-spacing: 0.04em; transition: color .2s;
+        }
+        #burger-overlay a.menu-link:hover { color: #fff; }
+
         .contact-card {
             background: #111;
             border: 1px solid rgba(255,255,255,0.08);
@@ -61,9 +79,35 @@
 
 <header>
     <div class="nav-inner">
-        <a href="index.html" class="font-bebas text-white hover:text-gray-300 transition-colors" style="font-size: 2rem; letter-spacing: .05em; text-decoration: none;">Wenix</a>
+        <div class="flex items-center">
+            <a href="index.html" class="font-bebas text-white hover:text-gray-300 transition-colors" style="font-size: 2rem; letter-spacing: .05em; text-decoration: none;">Wenix</a>
+            <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.25); margin: 0 16px;"></div>
+            <button id="burger-trigger" class="focus:outline-none flex flex-col gap-[5px] cursor-pointer p-2 hover:opacity-70 transition-opacity" aria-label="Menu">
+                <span id="line-1" style="width: 14px; height: 1.5px; background: #fff; border-radius: 1px; transition: transform 0.2s ease, width 0.2s ease;"></span>
+                <span id="line-2" style="width: 14px; height: 1.5px; background: #fff; border-radius: 1px; transition: transform 0.2s ease;"></span>
+            </button>
+        </div>
+        <div class="nav-right">
+            <nav class="nav-social">
+                <a href="https://www.facebook.com/share/1CiXdqpNnF/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="bx bxl-facebook"></i></a>
+                <a href="#" aria-label="YouTube"><i class="bx bxl-youtube"></i></a>
+                <a href="https://www.instagram.com/wenix.cz?igsh=MWN5Nm56dm00ZmV6aw%3D%3D" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="bx bxl-instagram"></i></a>
+                <a href="#" aria-label="LinkedIn"><i class="bx bxl-linkedin"></i></a>
+            </nav>
+        </div>
     </div>
 </header>
+
+<div id="burger-overlay">
+    <nav>
+        <a href="index.html#about" class="menu-link">O NÁS</a>
+        <a href="kariera.html" class="menu-link">KARIÉRA</a>
+        <a href="kontakt.html" class="menu-link">KONTAKT</a>
+        <a href="index.html#faq" class="menu-link">FAQ</a>
+        <div id="dynamic-burger-links" class="flex flex-col gap-6"></div>
+        <div class="h-px w-20 bg-white/10 my-4 mx-auto"></div>
+    </nav>
+</div>
 
 <main style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 120px 24px 64px;">
     <div style="width: 100%; max-width: 860px;">
@@ -122,8 +166,7 @@
     function openEmailClient(e) {
         e.preventDefault();
         const email = "info@wenix.cz";
-        
-        // Zkopírování e-mailové adresy do schránky
+
         navigator.clipboard.writeText(email).then(() => {
             const feedback = document.getElementById('copy-feedback');
             if (feedback) {
@@ -134,8 +177,36 @@
             console.error('Chyba při kopírování: ', err);
         });
 
-        // Otevření poštovního klienta
         window.location.href = `mailto:${email}`;
+    }
+
+    const trigger = document.getElementById('burger-trigger');
+    const overlay = document.getElementById('burger-overlay');
+    const line1 = document.getElementById('line-1');
+    const line2 = document.getElementById('line-2');
+
+    if (trigger && overlay) {
+        trigger.addEventListener('click', () => {
+            const isOpen = overlay.classList.toggle('open');
+            if (isOpen) {
+                line1.style.transform = 'translateY(3px) rotate(45deg)';
+                line2.style.transform = 'translateY(-3.5px) rotate(-45deg)';
+                document.body.style.overflow = 'hidden';
+            } else {
+                line1.style.transform = 'none';
+                line2.style.transform = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+
+        overlay.querySelectorAll('.menu-link').forEach(link => {
+            link.addEventListener('click', () => {
+                overlay.classList.remove('open');
+                line1.style.transform = 'none';
+                line2.style.transform = 'none';
+                document.body.style.overflow = '';
+            });
+        });
     }
 </script>
 </body>
